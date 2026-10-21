@@ -5,9 +5,9 @@ import pathlib, sys
 f = pathlib.Path("Dependencies/SideSign/Sources/Models/Feature.swift")
 s = f.read_text()
 edits = [
-    ("        case .inAppPurchase:                   self = .inAppPurchase\n",
-     "        case .inAppPurchase:                   self = .inAppPurchase\n"
-     "        case .healthKit:                       self = .healthKit\n"),
+    ("    public init?(entitlement: Entitlement) {\n",
+     "    public init?(entitlement: Entitlement) {\n"
+     "        if entitlement.rawValue == \"com.apple.developer.healthkit\" { self = .healthKit; return }\n"),
     ('    static let increasedDebuggingMemoryLimit: Feature   = "increasedDebuggingMemoryLimit"\n',
      '    static let increasedDebuggingMemoryLimit: Feature   = "increasedDebuggingMemoryLimit"\n'
      '    static let healthKit: Feature                       = "HK421J6T7P"\n'),
@@ -27,5 +27,5 @@ t = e.read_text()
 old = "    static let freeEntitlements: Set<Entitlement> = [\n        .appGroups,\n"
 if t.count(old) != 1:
     sys.exit("freeEntitlements anchor not found")
-e.write_text(t.replace(old, old + "        .healthKit,\n        .healthKitAccess,\n"))
+e.write_text(t.replace(old, old + "        \"com.apple.developer.healthkit\",\n        \"com.apple.developer.healthkit.access\",\n"))
 print("patched")
